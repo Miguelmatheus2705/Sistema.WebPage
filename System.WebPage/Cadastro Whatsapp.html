@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Clientes — WhatsApp</title>
+  <link rel="stylesheet" href="Script/styles.css"/>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="logo-icon">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2C8.28 2 2 8.28 2 16c0 2.44.65 4.74 1.79 6.72L2 30l7.5-1.75A13.92
+          13.92 0 0016 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.56c-.3.84-1.76
+          1.6-2.42 1.67-.65.07-1.27.32-4.27-.9C13 21.04 10.4 17.3 10.2
+          17.05c-.2-.26-1.6-2.13-1.6-4.07 0-1.93 1.02-2.88 1.38-3.27.37-.4.8-.5
+          1.07-.5h.77c.25 0 .58-.1.9.68.32.8 1.1 2.73 1.2 2.93.1.2.16.43.03.68-.13.27-.2.43-.4.67-.2.23-.42.52-.6.7-.2.2-.4.4-.17.78.23.38
+          1.02 1.68 2.2 2.73 1.5 1.34 2.78 1.75 3.16 1.95.38.2.6.17.82-.1.23-.27.97-1.13
+          1.23-1.52.26-.4.52-.33.87-.2.36.13 2.28 1.08 2.67 1.28.38.2.64.3.73.46.1.17.1.97-.2 1.8z"/>
+      </svg>
+    </div>
+    <h1>Cadastro de<br/><span>Clientes</span></h1>
+    <p class="subtitle">Preencha seus dados e fale conosco diretamente pelo WhatsApp</p>
+
+    <!-- Badge com número fixo de destino -->
+    <div class="wa-badge">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2C8.28 2 2 8.28 2 16c0 2.44.65 4.74 1.79 6.72L2 30l7.5-1.75A13.92
+          13.92 0 0016 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.56c-.3.84-1.76
+          1.6-2.42 1.67-.65.07-1.27.32-4.27-.9C13 21.04 10.4 17.3 10.2
+          17.05c-.2-.26-1.6-2.13-1.6-4.07 0-1.93 1.02-2.88 1.38-3.27.37-.4.8-.5
+          1.07-.5h.77c.25 0 .58-.1.9.68.32.8 1.1 2.73 1.2 2.93.1.2.16.43.03.68-.13.27-.2.43-.4.67-.2.23-.42.52-.6.7-.2.2-.4.4-.17.78.23.38
+          1.02 1.68 2.2 2.73 1.5 1.34 2.78 1.75 3.16 1.95.38.2.6.17.82-.1.23-.27.97-1.13
+          1.23-1.52.26-.4.52-.33.87-.2.36.13 2.28 1.08 2.67 1.28.38.2.64.3.73.46.1.17.1.97-.2 1.8z"/>
+      </svg>
+      Atendimento: +55 (17) 9 9711-4146
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO -->
+  <div class="card">
+
+    <!-- Nome -->
+    <div class="field" id="f-nome">
+      <label>Nome completo</label>
+      <div class="input-wrap">
+        <input type="text" id="nome" placeholder="Ex.: Ana Souza" autocomplete="name"/>
+        <svg class="ico" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+      <span class="error-msg">Informe nome e sobrenome.</span>
+    </div>
+
+    <!-- Telefone -->
+    <div class="field" id="f-tel">
+      <label>Seu telefone / WhatsApp</label>
+      <div class="phone-row">
+        <div class="ddi">🇧🇷 +55</div>
+        <div class="input-wrap">
+          <input type="tel" id="telefone" placeholder="(11) 98888-7777"
+            maxlength="15" inputmode="numeric"/>
+          <svg class="ico" viewBox="0 0 24 24">
+            <path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2c.27-.27.67-.36
+              1.02-.24A11.4 11.4 0 0020 15.5c.55 0 1 .45 1 1V20c0
+              .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55
+              0 1 .45 1 1 0 1.26.2 2.48.56 3.62.09.35 0 .72-.24.98L6.6 10.8z"/>
+          </svg>
+        </div>
+      </div>
+      <span class="error-msg">Informe um telefone válido com DDD (mín. 10 dígitos).</span>
+    </div>
+
+    <!-- CPF -->
+    <div class="field" id="f-cpf">
+      <label>CPF</label>
+      <div class="input-wrap">
+        <input type="text" id="cpf" placeholder="000.000.000-00"
+          maxlength="14" inputmode="numeric"/>
+        <svg class="ico" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <path d="M7 8h10M7 12h6M7 16h4"/>
+        </svg>
+      </div>
+      <span class="error-msg">CPF inválido — verifique os dígitos.</span>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn" id="submitBtn">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2C8.28 2 2 8.28 2 16c0 2.44.65 4.74 1.79 6.72L2 30l7.5-1.75A13.92
+          13.92 0 0016 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.56c-.3.84-1.76
+          1.6-2.42 1.67-.65.07-1.27.32-4.27-.9C13 21.04 10.4 17.3 10.2
+          17.05c-.2-.26-1.6-2.13-1.6-4.07 0-1.93 1.02-2.88 1.38-3.27.37-.4.8-.5
+          1.07-.5h.77c.25 0 .58-.1.9.68.32.8 1.1 2.73 1.2 2.93.1.2.16.43.03.68-.13.27-.2.43-.4.67-.2.23-.42.52-.6.7-.2.2-.4.4-.17.78.23.38
+          1.02 1.68 2.2 2.73 1.5 1.34 2.78 1.75 3.16 1.95.38.2.6.17.82-.1.23-.27.97-1.13
+          1.23-1.52.26-.4.52-.33.87-.2.36.13 2.28 1.08 2.67 1.28.38.2.64.3.73.46.1.17.1.97-.2 1.8z"/>
+      </svg>
+      Cadastrar e Falar no WhatsApp
+    </button>
+
+  </div>
+
+  <!-- BANCO DE DADOS -->
+  <div class="db-section">
+    <div class="db-header">
+      <div class="db-title">
+        <div class="dot"></div>
+        Banco de Dados Local
+        <span class="count-badge" id="countBadge">0</span>
+      </div>
+      <button class="clear-btn" id="clearBtn">Limpar tudo</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>CPF</th>
+            <th>Chat</th>
+          </tr>
+        </thead>
+        <tbody id="dbBody">
+          <tr class="empty-row"><td colspan="5">Nenhum cliente cadastrado ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span style="font-size:1.15rem">💬</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script type="module">
+  import { init } from './Script/app.js';
+  init();
+</script>
+
+</body>
+</html>
