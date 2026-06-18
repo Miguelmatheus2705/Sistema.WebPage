@@ -1,6 +1,6 @@
 /* ============================================================
    CADASTRO WHATSAPP — Banco de Dados
-   Arquivo: Banco de dados/database.js
+   Arquivo: database.js
 
    Persistência local via localStorage.
    Para migrar para backend (MySQL, PostgreSQL, etc.),
