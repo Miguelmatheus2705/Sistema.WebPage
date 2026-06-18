@@ -1,111 +1,129 @@
-/* ============================================================
-CADASTRO WHATSAPP — Script Principal (Corrigido)
-============================================================ */
+/* ── Módulo do Banco de Dados Falso (LocalStorage) ────────────────── */
+const db = {
+    get() {
+        return JSON.parse(localStorage.getItem('clientes_db')) || [];
+    },
+    insert(cliente) {
+        const dados = this.get();
+        dados.push(cliente);
+        localStorage.setItem('clientes_db', JSON.stringify(dados));
+    },
+    clear() {
+        localStorage.removeItem('clientes_db');
+    }
+};
 
-import { db } from './database.js';
-
-// Número de destino fixo
-const WA_NUMBER = '5517997114146';
-
-/* ── Máscaras ───────────────────────────────────────────────── */
-export function maskPhone(v) {
-    v = v.replace(/\D/g, '').slice(0, 11);
-    if (v.length > 10) v = `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
-    else if (v.length > 6) v = `(${v.slice(0, 2)}) ${v.slice(2, 6)}-${v.slice(6)}`;
-    else if (v.length > 2) v = `(${v.slice(0, 2)}) ${v.slice(2)}`;
-    else if (v.length > 0) v = `(${v}`;
+/* ── Funções de Auxílio e Validação ───────────────────────────────── */
+function maskPhone(v) {
+    v = v.replace(/\D/g, "");
+    if (v.length > 11) v = v.substring(0, 11);
+    v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+    v = v.replace(/(\d{5})(\d)/, "$1-$2");
     return v;
 }
 
-export function maskCPF(v) {
-    v = v.replace(/\D/g, '').slice(0, 11);
-    if (v.length > 9) v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6, 9)}-${v.slice(9)}`;
-    else if (v.length > 6) v = `${v.slice(0, 3)}.${v.slice(3, 6)}.${v.slice(6)}`;
-    else if (v.length > 3) v = `${v.slice(0, 3)}.${v.slice(3)}`;
+function maskCPF(v) {
+    v = v.replace(/\D/g, "");
+    if (v.length > 11) v = v.substring(0, 11);
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     return v;
 }
 
-/* ── Validação de CPF ───────────────────────────────────────── */
-export function validarCPF(cpf) {
+function validarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-    let s = 0;
-    for (let i = 0; i < 9; i++) s += +cpf[i] * (10 - i);
-    let r = (s * 10) % 11; if (r === 10 || r === 11) r = 0;
-    if (r !== +cpf[9]) return false;
-    s = 0;
-    for (let i = 0; i < 10; i++) s += +cpf[i] * (11 - i);
-    r = (s * 10) % 11; if (r === 10 || r === 11) r = 0;
-    return r === +cpf[10];
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    return resto === parseInt(cpf.substring(10, 11));
 }
 
-/* ── Escape HTML ────────────────────────────────────────────── */
-export function esc(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+function setFieldError(fieldId, hasError) {
+    const container = document.getElementById(fieldId);
+    if (container) {
+        if (hasError) container.classList.add('has-error');
+        else container.classList.remove('has-error');
+    }
 }
 
-/* ── Toast ──────────────────────────────────────────────────── */
-let toastTimer = null;
-export function showToast(msg, duration = 3500) {
-    const el = document.getElementById('toast');
-    const msgEl = document.getElementById('toastMsg');
-    if (!el || !msgEl) return;
-    msgEl.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+function showToast(message, duration = 3500) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
 }
 
-/* ── Erros de campo ─────────────────────────────────────────── */
-export function setFieldError(fieldId, hasError) {
-    document.getElementById(fieldId)?.classList.toggle('has-error', hasError);
+/* ── Fluxo Principal de Redirecionamento Direto para o WhatsApp ──── */
+function openWhatsApp(nome, telefone) {
+    const limpo = telefone.replace(/\D/g, '');
+    const msg = encodeURIComponent(`Olá! Meus dados de cadastro:\nNome: ${nome}\nTelefone: ${telefone}`);
+    const url = `https://api.whatsapp.com/send?phone=55${limpo}&text=${msg}`;
+    
+    // Execução síncrona imediata para o navegador não considerar um pop-up bloqueável
+    window.open(url, '_blank');
 }
 
-/* ── Abrir WhatsApp (CORRIGIDO SEM SETTIMEOUT) ──────────────── */
-export function openWhatsApp(nome, telefone) {
-    const msg = encodeURIComponent(
-        `Olá! Meu nome é *${nome}* e meu telefone é *+55 ${telefone}*.\nAcabei de me cadastrar e gostaria de falar com vocês. 😊`
-    );
-    window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
-}
-
-/* ── Renderizar tabela ──────────────────────────────────────── */
+/* ── Renderização da Tabela de Registros ────────────────────────── */
 export function renderTable() {
-    const data = db.getAll();
-    const body = document.getElementById('dbBody');
-    const badge = document.getElementById('countBadge');
-    if (!body) return;
-    if (badge) badge.textContent = data.length;
+    const tbody = document.getElementById('db-tbody');
+    const regCount = document.getElementById('regCount');
+    if (!tbody) return;
 
-    if (!data.length) {
-        body.innerHTML = `<tr class="empty-row"><td colspan="7">Nenhum cliente cadastrado ainda.</td></tr>`;
+    const lista = db.get();
+    if (regCount) regCount.textContent = lista.length;
+
+    if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 2rem;">Nenhum cliente registrado localmente.</td></tr>`;
         return;
     }
 
-    body.innerHTML = data.map((c, i) => `
-    <tr>
-        <td style="color:var(--muted);font-size:.78rem">${i + 1}</td>
-        <td style="font-weight:500">${esc(c.nome)}</td>
-        <td style="color:var(--muted);font-family:monospace">${esc(c.telefone)}</td>
-        <td style="font-family:monospace;letter-spacing:.03em">${esc(c.cpf)}</td>
-        <td style="color:var(--muted);font-size:.85rem">${esc(c.email || '-')}</td>
-        <td style="font-size:.85rem">${esc(c.cidade || '-')}/${esc(c.estado || '-')}</td>
-        <td>
-            <span class="tag-wa" onclick="window.__openWA('${esc(c.nome)}','${c.telefone}')">
-                <svg viewBox="0 0 32 32">
-                    <path d="M16 2C8.28 2 2 8.28 2 16c0 2.44.65 4.74 1.79 6.72L2 30l7.5-1.75A13.92 13.92 0 0016 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.56c-.3.84-1.76 1.6-2.42 1.67-.65.07-1.27.32-4.27-.9C13 21.04 10.4 17.3 10.2 17.05c-.2-.26-1.6-2.13-1.6-4.07 0-1.93 1.02-2.88 1.38-3.27.37-.4.8-.5 1.07-.5h.77c.25 0 .58-.1.9.68.32.8 1.1 2.73 1.2 2.93.1.2.16.43.03.68-.13.27-.2.43-.4.67-.2.23-.42.52-.6.7-.2.2-.4.4-.17.78.23.38 1.02 1.68 2.2 2.73 1.5 1.34 2.78 1.75 3.16 1.95.38.2.6.17.82-.1.23-.27.97-1.13 1.23-1.52.26-.4.52-.33.87-.2.36.13 2.28 1.08 2.67 1.28.38.2.64.3.73.46.1.17.1.97-.2 1.8z"/>
-                </svg>
-                Abrir chat
-            </span>
-        </td>
-    </tr>
+    tbody.innerHTML = lista.map(c => `
+        <tr>
+            <td style="font-weight: 500;">${c.nome}</td>
+            <td>${c.telefone}</td>
+            <td>${c.cidade} - ${c.estado}</td>
+            <td>
+                <button type="button" class="tag-wa" data-nome="${c.nome}" data-tel="${c.telefone}">
+                    Chamar WA
+                </button>
+            </td>
+        </tr>
     `).join('');
+
+    // Adiciona evento de clique direto nos botões da tabela gerada
+    tbody.querySelectorAll('.tag-wa').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const nome = e.currentTarget.getAttribute('data-nome');
+            const tel = e.currentTarget.getAttribute('data-tel');
+            openWhatsApp(nome, tel);
+        });
+    });
 }
 
-/* ── Submit (SALVANDO TODOS OS CAMPOS NO BANCO) ──────────────── */
-export function handleSubmit() {
+export function clearDB() {
+    if (confirm('Deseja realmente limpar todos os registros do banco de dados local?')) {
+        db.clear();
+        renderTable();
+        showToast('🗑 Banco de dados limpo com sucesso.');
+    }
+}
+
+/* ── Processamento e Interceptação do Envio ─────────────────────── */
+export function handleSubmit(event) {
+    // Intercepta e impede qualquer recarregamento acidental de página
+    if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+    }
+
     const nome = document.getElementById('nome').value.trim();
     const telefone = document.getElementById('telefone').value.trim();
     const cpf = document.getElementById('cpf').value.trim();
@@ -140,11 +158,10 @@ export function handleSubmit() {
     if (estadoInvalido) valido = false;
 
     if (!valido) {
-        showToast('⚠ Corrija os campos destacados em vermelho.', 4000);
+        showToast('⚠ Validação falhou. Verifique os campos em vermelho.');
         return;
     }
 
-    // OBJETO COMPLETO SALVO NO BANCO DE DADOS
     const cliente = {
         id: Date.now(),
         nome,
@@ -152,39 +169,28 @@ export function handleSubmit() {
         cpf,
         email,
         cidade,
-        estado,
-        data: new Date().toLocaleString('pt-BR')
+        estado
     };
 
     db.insert(cliente);
     renderTable();
-    showToast(`✅ ${nome} cadastrado! Abrindo WhatsApp…`);
+    showToast(`✅ ${nome} registrado! Abrindo WhatsApp corporativo...`);
 
-    // Limpeza dos campos
-    ['nome', 'telefone', 'cpf', 'email', 'cidade', 'estado'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    ['f-nome', 'f-tel', 'f-cpf', 'f-email', 'f-cidade', 'f-estado'].forEach(id => setFieldError(id, false));
+    // Reseta o formulário limpando os campos
+    document.getElementById('cadastroForm').reset();
 
-    // CHAMADA IMEDIATA PARA O NAVEGADOR NÃO BLOQUEAR
+    // Dispara a nova janela imediatamente ligada à ação de clique do usuário
     openWhatsApp(nome, telefone);
 }
 
-/* ── Limpar banco ───────────────────────────────────────────── */
-export function clearDB() {
-    if (!confirm('Deseja apagar TODOS os registros?')) return;
-    db.clear();
-    renderTable();
-    showToast('🗑 Banco de dados limpo com sucesso.');
-}
-
-/* ── Bootstrap ──────────────────────────────────────────────── */
+/* ── Inicialização do App ────────────────────────────────────────── */
 export function init() {
-    window.__openWA = openWhatsApp;
+    window.handleSubmit = handleSubmit;
 
     document.getElementById('telefone')?.addEventListener('input', function () { this.value = maskPhone(this.value); });
     document.getElementById('cpf')?.addEventListener('input', function () { this.value = maskCPF(this.value); });
+    
+    // Captura o clique direto garantindo vinculamento síncrono limpo
     document.getElementById('submitBtn')?.addEventListener('click', handleSubmit);
     document.getElementById('clearBtn')?.addEventListener('click', clearDB);
 
