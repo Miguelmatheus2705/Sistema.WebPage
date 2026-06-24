@@ -5,37 +5,33 @@
 
 import { db } from './database.js';
 
-/* ── Número de destino fixo ─────────────────────────────────── */
-// +55 (17) 9 9711-4146  →  55179971 14146
 const CONFIG = {
-    WHATSAPP: {
-        PHONE_NUMBER: '5517997114146',
-        BASE_URL: 'https://wa.me/'
-    }
+  WHATSAPP: {
+    PHONE_NUMBER: '5517997114146',
+  }
 };
 
 /* ── Abrir WhatsApp ─────────────────────────────────────────── */
-export function openWhatsApp(nome, cpf) {
+export function openWhatsApp(nome, telefone, cpf, email, cidade, estado) {
   const msg = encodeURIComponent(
-    `Olá! Meu nome é *${nome}* e meu cpf é * ${cpf}*.\nAcabei de me cadastrar e gostaria de falar com vocês. 😊`
+    `Olá! Acabei de me cadastrar e gostaria de falar com vocês. 😊\n\n` +
+    `*Nome:* ${nome}\n` +
+    `*Telefone:* +55 ${telefone}\n` +
+    `*CPF:* ${cpf}\n` +
+    `*E-mail:* ${email}\n` +
+    `*Cidade:* ${cidade} - ${estado}`
   );
   const url = `https://wa.me/${CONFIG.WHATSAPP.PHONE_NUMBER}?text=${msg}`;
 
-  // Usar <a> clicado programaticamente é mais confiável que window.open:
-  // navegadores não bloqueiam por ser tratado como navegação do usuário.
   const a = document.createElement('a');
   a.href = url;
-  newFunction();
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-
-  function newFunction() {
-    window.open(url, '_blank'); a.href = url;
-  }
 }
+
 
 
 /* ── Máscaras ───────────────────────────────────────────────── */
@@ -94,7 +90,6 @@ export function setFieldError(fieldId, hasError) {
   document.getElementById(fieldId)?.classList.toggle('has-error', hasError);
 }
 
-
 /* ── Renderizar tabela ──────────────────────────────────────── */
 export function renderTable() {
   const data = db.getAll();
@@ -104,7 +99,7 @@ export function renderTable() {
   if (badge) badge.textContent = data.length;
 
   if (!data.length) {
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">Nenhum cliente cadastrado ainda.</td></tr>`;
+    body.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhum cliente cadastrado ainda.</td></tr>`;
     return;
   }
 
@@ -114,8 +109,9 @@ export function renderTable() {
       <td style="font-weight:500">${esc(c.nome)}</td>
       <td style="color:var(--muted);font-family:monospace">${esc(c.telefone)}</td>
       <td style="font-family:monospace;letter-spacing:.03em">${esc(c.cpf)}</td>
+      <td>${esc(c.email)}</td>
       <td>
-        <span class="tag-wa" onclick="window.__openWA('${esc(c.nome)}','${esc(c.telefone)}')">
+        <span class="tag-wa" onclick="window.__openWA('${esc(c.nome)}','${esc(c.telefone)}','${esc(c.cpf)}','${esc(c.email)}','${esc(c.cidade)}','${esc(c.estado)}')">
           <svg viewBox="0 0 32 32">
             <path d="M16 2C8.28 2 2 8.28 2 16c0 2.44.65 4.74 1.79 6.72L2 30l7.5-1.75A13.92 13.92 0 0016 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.56c-.3.84-1.76 1.6-2.42 1.67-.65.07-1.27.32-4.27-.9C13 21.04 10.4 17.3 10.2 17.05c-.2-.26-1.6-2.13-1.6-4.07 0-1.93 1.02-2.88 1.38-3.27.37-.4.8-.5 1.07-.5h.77c.25 0 .58-.1.9.68.32.8 1.1 2.73 1.2 2.93.1.2.16.43.03.68-.13.27-.2.43-.4.67-.2.23-.42.52-.6.7-.2.2-.4.4-.17.78.23.38 1.02 1.68 2.2 2.73 1.5 1.34 2.78 1.75 3.16 1.95.38.2.6.17.82-.1.23-.27.97-1.13 1.23-1.52.26-.4.52-.33.87-.2.36.13 2.28 1.08 2.67 1.28.38.2.64.3.73.46.1.17.1.97-.2 1.8z"/>
           </svg>
@@ -131,6 +127,9 @@ export function handleSubmit() {
   const nome     = document.getElementById('nome').value.trim();
   const telefone = document.getElementById('telefone').value.trim();
   const cpf      = document.getElementById('cpf').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const cidade   = document.getElementById('cidade').value.trim();
+  const estado   = document.getElementById('estado').value.trim().toUpperCase();
 
   let valido = true;
 
@@ -146,6 +145,18 @@ export function handleSubmit() {
   setFieldError('f-cpf', cpfInvalido);
   if (cpfInvalido) valido = false;
 
+  const emailInvalido = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setFieldError('f-email', emailInvalido);
+  if (emailInvalido) valido = false;
+
+  const cidadeInvalida = !cidade;
+  setFieldError('f-cidade', cidadeInvalida);
+  if (cidadeInvalida) valido = false;
+
+  const estadoInvalido = estado.length !== 2;
+  setFieldError('f-estado', estadoInvalido);
+  if (estadoInvalido) valido = false;
+
   if (!valido) {
     showToast('⚠ Corrija os campos destacados em vermelho.', 4000);
     return;
@@ -153,9 +164,7 @@ export function handleSubmit() {
 
   const cliente = {
     id: Date.now(),
-    nome,
-    telefone,
-    cpf,
+    nome, telefone, cpf, email, cidade, estado,
     data: new Date().toLocaleString('pt-BR')
   };
 
@@ -163,17 +172,26 @@ export function handleSubmit() {
   renderTable();
   showToast(`✅ ${nome} cadastrado! Abrindo WhatsApp…`);
 
-  ['nome', 'telefone', 'cpf'].forEach(id => document.getElementById(id).value = '');
-  ['f-nome', 'f-tel', 'f-cpf'].forEach(id => setFieldError(id, false));
+  ['nome', 'telefone', 'cpf', 'email', 'cidade', 'estado']
+    .forEach(id => document.getElementById(id).value = '');
+  ['f-nome', 'f-tel', 'f-cpf', 'f-email', 'f-cidade', 'f-estado']
+    .forEach(id => setFieldError(id, false));
 
-  // Abre o WhatsApp imediatamente, ainda dentro do clique do usuário.
-  // Fazer isso dentro de um setTimeout faz o navegador (principalmente no
-  // celular) bloquear a abertura por não reconhecer como ação direta do usuário.
-  openWhatsApp(nome, cpf);
+  openWhatsApp(nome, telefone, cpf, email, cidade, estado);
+}
+
+/* ── Limpar banco ───────────────────────────────────────────── */
+export function clearDB() {
+  if (!confirm('Deseja apagar TODOS os registros?')) return;
+  db.clear();
+  renderTable();
+  showToast('🗑 Banco de dados limpo com sucesso.');
 }
 
 /* ── Bootstrap ──────────────────────────────────────────────── */
 export function init() {
+  window.__openWA = openWhatsApp;
+
   document.getElementById('telefone')
     ?.addEventListener('input', function () { this.value = maskPhone(this.value); });
 
@@ -182,6 +200,9 @@ export function init() {
 
   document.getElementById('submitBtn')
     ?.addEventListener('click', handleSubmit);
-  
+
+  document.getElementById('clearBtn')
+    ?.addEventListener('click', clearDB);
+
   renderTable();
 }
