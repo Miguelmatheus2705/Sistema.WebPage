@@ -7,8 +7,12 @@ import { db } from './database.js';
 
 /* ── Número de destino fixo ─────────────────────────────────── */
 // +55 (17) 9 9711-4146  →  55179971 14146
-const WA_NUMBER = '5517997114146';
-
+const CONFIG = {
+    WHATSAPP: {
+        PHONE_NUMBER: '5517997114146',
+        BASE_URL: 'https://wa.me/'
+    }
+};
 /* ── Máscaras ───────────────────────────────────────────────── */
 export function maskPhone(v) {
   v = v.replace(/\D/g, '').slice(0, 11);
