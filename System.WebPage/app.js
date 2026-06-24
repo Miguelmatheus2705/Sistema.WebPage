@@ -11,8 +11,29 @@ const CONFIG = {
     WHATSAPP: {
         PHONE_NUMBER: '5517997114146',
         BASE_URL: 'https://wa.me/'
+
     }
 };
+
+/* ── Abrir WhatsApp ─────────────────────────────────────────── */
+export function openWhatsApp(nome, cpf) {
+  const msg = encodeURIComponent(
+    `Olá! Meu nome é *${nome}* e meu cpf é * ${cpf}*.\nAcabei de me cadastrar e gostaria de falar com vocês. 😊`
+  );
+  const url = `https://wa.me/${CONFIG.WHATSAPP.PHONE_NUMBER}?text=${msg}`;
+
+  // Usar <a> clicado programaticamente é mais confiável que window.open:
+  // navegadores não bloqueiam por ser tratado como navegação do usuário.
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+
 /* ── Máscaras ───────────────────────────────────────────────── */
 export function maskPhone(v) {
   v = v.replace(/\D/g, '').slice(0, 11);
@@ -69,23 +90,6 @@ export function setFieldError(fieldId, hasError) {
   document.getElementById(fieldId)?.classList.toggle('has-error', hasError);
 }
 
-/* ── Abrir WhatsApp ─────────────────────────────────────────── */
-export function openWhatsApp(nome, telefone) {
-  const msg = encodeURIComponent(
-    `Olá! Meu nome é *${nome}* e meu telefone é *+55 ${telefone}*.\nAcabei de me cadastrar e gostaria de falar com vocês. 😊`
-  );
-  const url = `https://wa.me/${WA_NUMBER}?text=${msg}`;
-
-  // Usar <a> clicado programaticamente é mais confiável que window.open:
-  // navegadores não bloqueiam por ser tratado como navegação do usuário.
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
 
 /* ── Renderizar tabela ──────────────────────────────────────── */
 export function renderTable() {
@@ -161,20 +165,12 @@ export function handleSubmit() {
   // Abre o WhatsApp imediatamente, ainda dentro do clique do usuário.
   // Fazer isso dentro de um setTimeout faz o navegador (principalmente no
   // celular) bloquear a abertura por não reconhecer como ação direta do usuário.
-  openWhatsApp(nome, telefone);
-}
-
-/* ── Limpar banco ───────────────────────────────────────────── */
-export function clearDB() {
-  if (!confirm('Deseja apagar TODOS os registros?')) return;
-  db.clear();
-  renderTable();
-  showToast('🗑 Banco de dados limpo com sucesso.');
+  openWhatsApp(nome, cpf);
 }
 
 /* ── Bootstrap ──────────────────────────────────────────────── */
 export function init() {
-  window.__openWA = openWhatsApp;
+  window.open https://wa.me/${PHONE_NUMBER}?text=${msg}, '_blank'
 
   document.getElementById('telefone')
     ?.addEventListener('input', function () { this.value = maskPhone(this.value); });
@@ -184,9 +180,6 @@ export function init() {
 
   document.getElementById('submitBtn')
     ?.addEventListener('click', handleSubmit);
-
-  document.getElementById('clearBtn')
-    ?.addEventListener('click', clearDB);
-
+  
   renderTable();
 }

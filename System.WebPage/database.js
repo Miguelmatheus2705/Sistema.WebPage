@@ -64,18 +64,6 @@ export const db = {
     return _write(_read().filter(c => c.id !== id));
   },
 
-  /** Remove todos os registros */
-  clear() {
-    localStorage.removeItem(STORAGE_KEY);
-    console.info('[DB] Banco limpo.');
-    return true;
-  },
-
-  /** Total de registros */
-  count() {
-    return _read().length;
-  },
-
   /** Busca por nome ou CPF */
   search(query) {
     const q = query.toLowerCase().trim();
