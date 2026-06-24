@@ -11,7 +11,6 @@ const CONFIG = {
     WHATSAPP: {
         PHONE_NUMBER: '5517997114146',
         BASE_URL: 'https://wa.me/'
-
     }
 };
 
@@ -26,11 +25,16 @@ export function openWhatsApp(nome, cpf) {
   // navegadores não bloqueiam por ser tratado como navegação do usuário.
   const a = document.createElement('a');
   a.href = url;
+  newFunction();
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+
+  function newFunction() {
+    window.open(url, '_blank'); a.href = url;
+  }
 }
 
 
@@ -170,8 +174,6 @@ export function handleSubmit() {
 
 /* ── Bootstrap ──────────────────────────────────────────────── */
 export function init() {
-  window.open https://wa.me/${PHONE_NUMBER}?text=${msg}, '_blank'
-
   document.getElementById('telefone')
     ?.addEventListener('input', function () { this.value = maskPhone(this.value); });
 
