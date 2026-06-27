@@ -7,7 +7,7 @@ import { db } from './database.js';
 
 const CONFIG = {
   WHATSAPP: {
-    PHONE_NUMBER: '5517997114146',
+    contactWhats: '5517997114146',
   }
 };
 
@@ -21,7 +21,7 @@ export function openWhatsApp(nome, telefone, cpf, email, cidade, estado) {
     `*E-mail:* ${email}\n` +
     `*Cidade:* ${cidade} - ${estado}`
   );
-  const url = `https://wa.me/${CONFIG.WHATSAPP.PHONE_NUMBER}?text=${msg}`;
+  const url = `https://wa.me/${CONFIG.WHATSAPP.contactWhats}?text=${msg}`;
 
   const a = document.createElement('a');
   a.href = url;

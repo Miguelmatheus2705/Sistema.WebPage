@@ -1,10 +1,6 @@
 /* ============================================================
    CADASTRO WHATSAPP — Banco de Dados
    Arquivo: database.js
-
-   Persistência local via localStorage.
-   Para migrar para backend (MySQL, PostgreSQL, etc.),
-   substitua apenas as implementações mantendo a mesma API.
    ============================================================ */
 
 const STORAGE_KEY = 'cw_clientes_v2';
@@ -64,17 +60,40 @@ export const db = {
     return _write(_read().filter(c => c.id !== id));
   },
 
-  /** Busca por nome ou CPF */
+  /** Busca por nome, CPF, e-mail ou cidade */
   search(query) {
     const q = query.toLowerCase().trim();
     return _read().filter(c =>
-      c.nome.toLowerCase().includes(q) ||
-      c.cpf.replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+      c.nome?.toLowerCase().includes(q) ||
+      c.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, '')) ||
+      c.email?.toLowerCase().includes(q) ||
+      c.cidade?.toLowerCase().includes(q)
     );
+  },
+
+  /** Filtra por estado (UF) */
+  filterByEstado(uf) {
+    return _read().filter(c => c.estado?.toUpperCase() === uf.toUpperCase());
   },
 
   /** Exporta como JSON formatado */
   exportJSON() {
     return JSON.stringify(_read(), null, 2);
+  },
+
+  /** Exporta como CSV */
+  exportCSV() {
+    const data = _read();
+    if (!data.length) return '';
+    const headers = ['id', 'nome', 'telefone', 'cpf', 'email', 'cidade', 'estado', 'data'];
+    const rows = data.map(c =>
+      headers.map(h => `"${(c[h] ?? '').toString().replace(/"/g, '""')}"`).join(',')
+    );
+    return [headers.join(','), ...rows].join('\n');
+  },
+
+  /** Limpa todos os registros */
+  clear() {
+    return _write([]);
   }
 };
