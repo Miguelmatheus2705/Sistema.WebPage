@@ -3,89 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fale conosco diretamente pelo nosso WhatsApp Corporativo </title>
+    <title>Cadastro WhatsApp Corporativo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
     <script type="module">
-        import { init } from 'Sistema.WebPage/SystemWebPage/app.js';
+        import { init } from './app.js';
         init();
     </script>
-
 </head>
 <body>
 
+    <div class="grain"></div>
+
     <div class="wrapper">
-        <header class="header">
-          <h1>Nos chame diretamente no <br><span>WhatsApp</span></h1>
-            <p class="subtitle">Gestão Avançada de Leads e Direcionamento Comercial</p>
-            <div class="wa-badge">
-                <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.743.002-2.602-1.01-5.05-2.85-6.892-1.84-1.842-4.29-2.856-6.889-2.858-5.437 0-9.862 4.371-9.867 9.744-.002 2.11.548 4.166 1.595 5.96l-.999 3.648 3.731-.967z"/></svg>
-                 WhatsApp Corporativo Ativo
+
+        <!-- ═══════════════ HERO ═══════════════ -->
+        <header class="hero">
+            <div class="hero-bg">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-content">
+                <p class="hero-label">Cadastro • WhatsApp Corporativo</p>
+                <h1 class="hero-title">
+                    <span class="line">Conecte-se</span>
+                    <span class="line">direto pelo <em>WhatsApp</em></span>
+                </h1>
+                <p class="hero-desc">Gestão avançada de leads e direcionamento comercial. Cadastre-se e inicie uma conversa instantânea com nossa equipe.</p>
+                <div class="hero-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                    WhatsApp Corporativo Ativo
+                </div>
             </div>
         </header>
 
-        <main class="card">
-            <form id="cadastroForm">
-                <div class="field" id="f-nome">
-                    <label for="nome">Nome Completo</label>
-                    <div class="input-wrap">
-                        <input type="text" id="nome" placeholder="Ex: Daniel Marques" autocomplete="off">
+        <!-- ═══════════════ SEÇÃO 01 — SOBRE ═══════════════ -->
+        <section class="section">
+            <div class="section-header">
+                <span class="section-num">01</span>
+                <span class="section-line"></span>
+                <span class="section-label">Sobre o processo</span>
+            </div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2 class="section-title">
+                        <span class="line">Cadastro rápido</span>
+                        <span class="line">e <em>direcionamento</em></span>
+                        <span class="line">comercial.</span>
+                    </h2>
+                    <div class="about-desc">
+                        <p>Preencha seus dados abaixo e sua mensagem será enviada diretamente para o nosso WhatsApp corporativo, com todas as informações organizadas para um atendimento mais eficiente.</p>
+                        <p>O processo é simples, seguro e leva menos de 1 minuto para ser concluído.</p>
                     </div>
-                    <span class="error-msg">Por favor, insira o nome completo (Nome e Sobrenome).</span>
                 </div>
-
-                <div class="field" id="f-tel">
-                    <label for="telefone">Telefone / WhatsApp</label>
-                    <div class="phone-row">
-                        <div class="ddi">+55</div>
-                        <div class="input-wrap">
-                            <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="off">
+                <div class="about-visual">
+                    <div class="visual-card">
+                        <div class="visual-card-inner">
+                            <svg class="visual-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span class="visual-text">Atendimento<br>Imediato</span>
                         </div>
                     </div>
-                    <span class="error-msg">Insira um número de telefone válido com DDD.</span>
                 </div>
-
-                <div class="field" id="f-cpf">
-                    <label for="cpf">CPF</label>
-                    <div class="input-wrap">
-                        <input type="text" id="cpf" placeholder="000.000.000-00" autocomplete="off">
-                    </div>
-                    <span class="error-msg">Número de CPF inválido.</span>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <p class="stat-value">+Rápido</p>
+                    <p class="stat-desc">Cadastro em menos de 1 minuto</p>
                 </div>
-
-                <div class="field" id="f-email">
-                    <label for="email">E-mail Corporativo</label>
-                    <div class="input-wrap">
-                        <input type="email" id="email" placeholder="exemplo@empresa.com" autocomplete="off">
-                    </div>
-                    <span class="error-msg">Insira um endereço de e-mail válido.</span>
+                <div class="stat-item">
+                    <p class="stat-value">Direto</p>
+                    <p class="stat-desc">Sem intermediários, sem fila</p>
                 </div>
+                <div class="stat-item">
+                    <p class="stat-value">Seguro</p>
+                    <p class="stat-desc">Dados protegidos e criptografados</p>
+                </div>
+            </div>
+        </section>
 
-                <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
-                    <div class="field" id="f-cidade">
-                        <label for="cidade">Cidade</label>
-                        <div class="input-wrap">
-                            <input type="text" id="cidade" placeholder="São Paulo" autocomplete="off">
+        <!-- ═══════════════ MARQUEE ═══════════════ -->
+        <div class="marquee-bar">
+            <div class="marquee-track">
+                <span>CADASTRO</span><span class="dot">✦</span>
+                <span>WHATSAPP</span><span class="dot">✦</span>
+                <span>CONNECT</span><span class="dot">✦</span>
+                <span>CORPORATIVO</span><span class="dot">✦</span>
+                <span>LEADS</span><span class="dot">✦</span>
+                <span>ATENDIMENTO</span><span class="dot">✦</span>
+                <span>CADASTRO</span><span class="dot">✦</span>
+                <span>WHATSAPP</span><span class="dot">✦</span>
+                <span>CONNECT</span><span class="dot">✦</span>
+                <span>CORPORATIVO</span><span class="dot">✦</span>
+                <span>LEADS</span><span class="dot">✦</span>
+                <span>ATENDIMENTO</span><span class="dot">✦</span>
+            </div>
+        </div>
+
+        <!-- ═══════════════ SEÇÃO 02 — FORMULÁRIO ═══════════════ -->
+        <section class="section" id="cadastro">
+            <div class="section-header">
+                <span class="section-num">02</span>
+                <span class="section-line"></span>
+                <span class="section-label">Formulário de cadastro</span>
+            </div>
+            <div class="form-grid">
+                <div class="form-info">
+                    <h2 class="section-title">
+                        <span class="line">Preencha seus</span>
+                        <span class="line"><em>dados</em></span>
+                    </h2>
+                    <p class="form-info-desc">Após o preenchimento, você será redirecionado automaticamente para o nosso WhatsApp com uma mensagem personalizada contendo todas as suas informações.</p>
+                    <a href="https://wa.me/5517997114146" target="_blank" rel="noopener noreferrer" class="form-info-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span>+55 17 99711-4146</span>
+                    </a>
+                </div>
+                <div class="form-panel">
+                    <form id="cadastroForm" class="form-fields">
+
+                        <div class="field" id="f-nome">
+                            <label for="nome">Nome Completo</label>
+                            <input type="text" id="nome" placeholder="Ex: Daniel Marques" autocomplete="off">
+                            <span class="error-msg">Por favor, insira o nome completo (Nome e Sobrenome).</span>
                         </div>
-                        <span class="error-msg">Informe a cidade.</span>
-                    </div>
 
-                    <div class="field" id="f-estado">
-                        <label for="estado">UF</label>
-                        <div class="input-wrap">
-                            <input type="text" id="estado" placeholder="SP" maxlength="2" style="text-transform: uppercase;" autocomplete="off">
+                        <div class="field" id="f-tel">
+                            <label for="telefone">Telefone / WhatsApp</label>
+                            <div class="phone-row">
+                                <div class="ddi">+55</div>
+                                <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="off">
+                            </div>
+                            <span class="error-msg">Insira um número de telefone válido com DDD.</span>
                         </div>
-                        <span class="error-msg">UF inválida.</span>
-                    </div>
+
+                        <div class="field" id="f-cpf">
+                            <label for="cpf">CPF</label>
+                            <input type="text" id="cpf" placeholder="000.000.000-00" autocomplete="off">
+                            <span class="error-msg">Número de CPF inválido.</span>
+                        </div>
+
+                        <div class="field" id="f-email">
+                            <label for="email">E-mail Corporativo</label>
+                            <input type="email" id="email" placeholder="exemplo@empresa.com" autocomplete="off">
+                            <span class="error-msg">Insira um endereço de e-mail válido.</span>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field" id="f-cidade">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" id="cidade" placeholder="São Paulo" autocomplete="off">
+                                <span class="error-msg">Informe a cidade.</span>
+                            </div>
+                            <div class="field field-sm" id="f-estado">
+                                <label for="estado">UF</label>
+                                <input type="text" id="estado" placeholder="SP" maxlength="2" style="text-transform: uppercase;" autocomplete="off">
+                                <span class="error-msg">UF inválida.</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-submit" id="submitBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                            Confirmar Cadastro & Abrir Conversa
+                        </button>
+                    </form>
                 </div>
+            </div>
+        </section>
 
-                <button type="button" class="btn" id="submitBtn">
-                    Confirmar Cadastro & Abrir Conversa
-                </button>
-            </form>
-        </main>
+        <!-- ═══════════════ SEÇÃO 03 — BANCO DE DADOS ═══════════════ -->
+        <section class="section" id="clientes">
+            <div class="section-header">
+                <span class="section-num">03</span>
+                <span class="section-line"></span>
+                <span class="section-label">Clientes cadastrados</span>
+            </div>
+            <div class="db-top">
+                <div class="db-title-row">
+                    <span class="db-dot"></span>
+                    <h3>Registros</h3>
+                    <span class="count-badge" id="countBadge">0</span>
+                </div>
+                <button class="clear-btn" id="clearBtn">Limpar banco</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>CPF</th>
+                            <th>E-mail</th>
+                            <th>WhatsApp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbBody">
+                        <tr class="empty-row"><td colspan="6">Nenhum cliente cadastrado ainda.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
+        <!-- ═══════════════ FOOTER ═══════════════ -->
+        <footer class="footer">
+            <div class="footer-top">
+                <p class="footer-brand">Sistema<span>Cadastro</span></p>
+                <p class="footer-desc">Solução completa para cadastro e direcionamento de clientes via WhatsApp corporativo.</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sistema Cadastro. Todos os direitos reservados.</p>
+                <p>Cadastro • WhatsApp • Connect</p>
+            </div>
+        </footer>
 
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <span id="toastMsg"></span>
+    </div>
 
 </body>
-</html> 
+</html>
