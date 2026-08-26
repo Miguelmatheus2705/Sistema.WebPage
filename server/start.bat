@@ -9,43 +9,36 @@ echo.
 
 cd /d "%~dp0"
 
-:: Verificar se tem dominio salvo
-if not exist "%~dp0\domain.txt" (
-    echo [!] Dominio nao configurado! Execute install.bat primeiro.
-    pause
-    exit /b 1
-)
-
-set /p DOMAIN=<"%~dp0\domain.txt"
-echo [*] Dominio: %DOMAIN%
-echo.
-
 :: Iniciar servidor
-echo [*] Iniciando servidor local...
+echo [*] Iniciando servidor local na porta 3000...
 start "Servidor Local" cmd /c "node server.js"
 timeout /t 2 /nobreak >nul
+echo     Servidor OK!
+echo.
 
-:: Criar tunnel se nao existe
-echo [*] Verificando tunnel...
-"%~dp0\cloudflared.exe" tunnel list | findstr "pericia-cantareli" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [*] Criando tunnel...
-    "%~dp0\cloudflared.exe" tunnel create pericia-cantareli
+:: Verificar se tem dominio salvo
+if exist "%~dp0\domain.txt" (
+    set /p DOMAIN=<"%~dp0\domain.txt"
+    echo [*] Dominio personalizado encontrado: !DOMAIN!
+    echo [*] Iniciando tunnel com dominio...
+    if exist "%~dp0\config-tunnel.yml" (
+        "%~dp0\cloudflared.exe" tunnel run --config "%~dp0\config-tunnel.yml" pericia-cantareli
+    ) else (
+        "%~dp0\cloudflared.exe" tunnel run --url http://localhost:3000
+    )
+) else (
+    echo [*] Dominio pessoal: usando link automatico do Cloudflare
+    echo [*] O link HTTPS aparecera abaixo:
+    echo.
+    echo ============================================
+    echo   COPIE O LINK QUE APARECER E ABRA NO NAVEGADOR
+    echo ============================================
+    echo.
+    if exist "%~dp0\cloudflared.exe" (
+        "%~dp0\cloudflared.exe" --url http://localhost:3000
+    ) else (
+        cloudflared --url http://localhost:3000
+    )
 )
-
-:: Roteamento DNS
-echo [*] Configurando DNS...
-"%~dp0\cloudflared.exe" tunnel route dns pericia-cantareli %DOMAIN% >nul 2>&1
-
-:: Iniciar tunnel
-echo.
-echo ============================================
-echo   SITE ATIVO EM: https://%DOMAIN%
-echo ============================================
-echo.
-echo   Mantenha esta janela aberta!
-echo   Para fechar, pressione Ctrl+C
-echo.
-"%~dp0\cloudflared.exe" tunnel run --config "%~dp0\config-tunnel.yml" pericia-cantareli
 
 pause

@@ -7,8 +7,10 @@ echo   INSTALADOR - PERICIA CANTARELI
 echo ============================================
 echo.
 
+cd /d "%~dp0"
+
 :: Verificar Node.js
-echo [1/6] Verificando Node.js...
+echo [1/4] Verificando Node.js...
 node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo     Node.js nao encontrado! Baixando...
@@ -24,7 +26,7 @@ if %errorlevel% neq 0 (
 echo.
 
 :: Verificar npm
-echo [2/6] Verificando npm...
+echo [2/4] Verificando npm...
 npm -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo     ERRO: npm nao encontrado.
@@ -36,14 +38,13 @@ npm -v
 echo.
 
 :: Instalar dependencias
-echo [3/6] Instalando dependencias do servidor...
-cd /d "%~dp0"
+echo [3/4] Instalando dependencias do servidor...
 call npm install
 echo     Dependencias instaladas!
 echo.
 
-:: Verificar/Instalar Cloudflare Tunnel
-echo [4/6] Verificando Cloudflare Tunnel...
+:: Baixar Cloudflare Tunnel
+echo [4/4] Verificando Cloudflare Tunnel...
 if not exist "%~dp0\cloudflared.exe" (
     echo     Baixando Cloudflare Tunnel...
     powershell -Command "Invoke-WebRequest -Uri 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe' -OutFile '%~dp0\cloudflared.exe'"
@@ -53,57 +54,14 @@ if not exist "%~dp0\cloudflared.exe" (
 )
 echo.
 
-:: Login no Cloudflare
-echo [5/6] Login no Cloudflare...
-echo.
-echo   ╔══════════════════════════════════════════════╗
-echo   ║  IMPORTANTE: Voce precisa de uma conta       ║
-echo   ║  gratuita no Cloudflare e um dominio.        ║
-echo   ║                                               ║
-echo   ║  Se nao tem conta, crie em:                   ║
-echo   ║  https://dash.cloudflare.com/sign-up          ║
-echo   ║                                               ║
-echo   ║  Se ja tem, faça login quando o navegador     ║
-echo   ║  abrir abaixo.                                ║
-echo   ╚══════════════════════════════════════════════╝
-echo.
-"%~dp0\cloudflared.exe" tunnel login
-echo.
-
-:: Perguntar dominio
-echo [6/6] Configurando dominio personalizado...
-echo.
-set /p DOMAIN="Digite seu dominio (ex: periciacantareli.com.br): "
-echo.
-
-:: Criar arquivo de configuracao do tunnel
-echo Criando configuracao do tunnel...
-
-(
-echo tunnel: 
-echo credentials-file: %USERPROFILE%\.cloudflared\credentials.json
-echo.
-echo ingress:
-echo   - hostname: %DOMAIN%
-echo     service: http://localhost:3000
-echo     originRequest:
-echo       noTLSVerify: true
-echo   - service: http_status:404
-) > "%~dp0\config-tunnel.yml"
-
-echo.
 echo ============================================
 echo   INSTALACAO CONCLUIDA!
 echo ============================================
 echo.
-echo   Dominio configurado: %DOMAIN%
+echo   Para iniciar o servidor, execute:
+echo     start.bat
 echo.
-echo   Proximos passos:
-echo   1. Execute: start.bat
-echo   2. O site estara em: https://%DOMAIN%
-echo   3. Para inicio automatico: setup-service.bat
+echo   Para inicio automatico, execute:
+echo     setup-service.bat
 echo.
-echo   Salve este dominio! Voce precisara dele.
-echo.
-echo %DOMAIN% > "%~dp0\domain.txt"
 pause

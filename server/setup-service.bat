@@ -16,15 +16,7 @@ if %errorlevel% neq 0 (
 
 cd /d "%~dp0"
 
-if not exist "%~dp0\domain.txt" (
-    echo   [!] Dominio nao configurado! Execute install.bat primeiro.
-    pause
-    exit /b 1
-)
-
-set /p DOMAIN=<"%~dp0\domain.txt"
-
-echo   Criando servico para: %DOMAIN%
+echo   Criando servico para inicio automatico...
 echo.
 
 :: Criar script PowerShell
@@ -33,8 +25,20 @@ echo $projectPath = '%~dp0'
 echo $nodePath = where.exe node 2^>nul
 echo if ^(-not $nodePath^) { $nodePath = 'C:\Program Files\nodejs\node.exe' }
 echo.
+echo $cloudflared = "$projectPath\cloudflared.exe"
+echo if ^(-not ^(Test-Path $cloudflared^)^) { $cloudflared = 'cloudflared' }
+echo.
+echo $domainFile = "$projectPath\domain.txt"
+echo $hasDomain = Test-Path $domainFile
+echo.
+echo if ^($hasDomain^) {
+echo     $domain = Get-Content $domainFile
+echo     $action2 = New-ScheduledTaskAction -Execute $cloudflared -Argument "tunnel run --config `"$projectPath\config-tunnel.yml`" pericia-cantareli" -WorkingDirectory $projectPath
+echo } else {
+echo     $action2 = New-ScheduledTaskAction -Execute $cloudflared -Argument "--url http://localhost:3000" -WorkingDirectory $projectPath
+echo }
+echo.
 echo $action1 = New-ScheduledTaskAction -Execute $nodePath -Argument 'server.js' -WorkingDirectory $projectPath
-echo $action2 = New-ScheduledTaskAction -Execute "$projectPath\cloudflared.exe" -Argument "tunnel run --config `"$projectPath\config-tunnel.yml`" pericia-cantareli" -WorkingDirectory $projectPath
 echo $trigger = New-ScheduledTaskTrigger -AtStartup
 echo $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RestartCount 3 -RestartInterval ^(New-TimeSpan -Minutes 1^)
 echo $principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
@@ -46,7 +50,7 @@ echo Register-ScheduledTask -TaskName 'PericiaCantareli-Tunnel' -Action $action2
 powershell -ExecutionPolicy Bypass -File "%~dp0\create-service.ps1"
 
 echo.
-echo   Iniciando servicos...
+echo   Iniciando servicos agora...
 schtasks /run /tn "PericiaCantareli-Server" >nul 2>&1
 schtasks /run /tn "PericiaCantareli-Tunnel" >nul 2>&1
 
@@ -55,11 +59,10 @@ echo ============================================
 echo   CONFIGURADO COM SUCESSO!
 echo ============================================
 echo.
-echo   O servidor + tunnel vao iniciar automaticamente.
-echo   Site: https://%DOMAIN%
+echo   O servidor + tunnel vao iniciar sozinhos
+echo   toda vez que o PC ligar.
 echo.
-echo   Verificar tarefas: taskschd.msc
-echo   Remover:
+echo   Para remover, abra CMD como Admin:
 echo     schtasks /delete /tn "PericiaCantareli-Server" /f
 echo     schtasks /delete /tn "PericiaCantareli-Tunnel" /f
 echo.
