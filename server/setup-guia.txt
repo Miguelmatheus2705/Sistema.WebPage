@@ -1,0 +1,97 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GUIA DE CONFIGURACAO - PERICIA CANTARELI            ║
+║                  HTTPS + DOMINIO PERSONALIZADO              ║
+╚══════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+ PASSO 1 — CRIAR CONTA NO CLOUDFLARE (GRATUITO)
+═══════════════════════════════════════════════════════════════
+
+  1. Acesse: https://dash.cloudflare.com/sign-up
+  2. Crie uma conta com e-mail e senha
+  3. Verifique o e-mail
+  4. Faca login
+
+═══════════════════════════════════════════════════════════════
+ PASSO 2 — COMPRAR DOMINIO (via Cloudflare)
+═══════════════════════════════════════════════════════════════
+
+  1. No painel do Cloudflare, va em: Domain Registration > Register Domains
+  2. Pesquise: periciacantareli.com.br (ou .com, .net, etc.)
+  3. Escolha um disponivel e compre
+  4. Preco medio: R$ 30-60/ano (sem markup, custo direto)
+  5. Preencha os dados de registro (CPF/CNPJ obrigatorio)
+
+  ALTERNATIVA — Se ja tem dominio em outro lugar:
+  1. Adicione o dominio ao Cloudflare (option "Add an existing domain")
+  2. Mude os nameservers no registro do dominio para os do Cloudflare
+
+═══════════════════════════════════════════════════════════════
+ PASSO 3 — CONFIGURAR NO PC DESTINO
+═══════════════════════════════════════════════════════════════
+
+  1. Copie a pasta "Sistema.WebPage" inteira para o PC destino
+  2. Execute: install.bat
+     - Ele vai instalar Node.js (se nao tiver)
+     - Vai instalar as dependencias
+     - Vai baixar o Cloudflare Tunnel
+     - Vai abrir o navegador para voce fazer login no Cloudflare
+     - Vai pedir o dominio (digite: periciacantareli.com.br)
+
+  3. Execute: start.bat
+     - O servidor vai iniciar
+     - O tunnel vai conectar
+     - O site estara em: https://periciacantareli.com.br
+
+  4. Execute: setup-service.bat (como Administrador)
+     - Configura inicio automatico no boot do Windows
+
+═══════════════════════════════════════════════════════════════
+ PASSO 4 — VERIFICAR SE TUDO FUNCIONOU
+═══════════════════════════════════════════════════════════════
+
+  Abra o navegador e acesse:
+    https://periciacantareli.com.br
+
+  Deve aparecer o site com:
+    - Cadeado verde (HTTPS ativo)
+    - Certificado valido (Cloudflare provide)
+    - Nome personalizado na barra de endereco
+
+═══════════════════════════════════════════════════════════════
+ DICAS IMPORTANTES
+═══════════════════════════════════════════════════════════════
+
+  • O PC destino precisa ficar LIGADO 24h por dia
+  • O HTTPS e Automatico (Cloudflare gerencia os certificados)
+  • Nao precisa abrir porta no roteador
+  • Funciona atras de qualquer rede/NAT
+  • Se o PC reiniciar, o servico reinicia sozinho
+
+  PARA PARAR O SERVIDOR:
+    Execute: stop.bat
+
+  PARA REMOVER O SERVICO:
+    Abra CMD como Admin e execute:
+      schtasks /delete /tn "PericiaCantareli-Server" /f
+      schtasks /delete /tn "PericiaCantareli-Tunnel" /f
+
+═══════════════════════════════════════════════════════════════
+ STRUTURA DE ARQUIVOS
+═══════════════════════════════════════════════════════════════
+
+  Sistema.WebPage/
+  ├── System.WebPage/          ← Arquivos do site
+  │   ├── Cadastro Whatsapp.html
+  │   ├── styles.css
+  │   ├── app.js
+  │   └── database.js
+  ├── server/                  ← Config do servidor
+  │   ├── server.js
+  │   ├── package.json
+  │   ├── install.bat
+  │   ├── start.bat
+  │   ├── stop.bat
+  │   ├── setup-service.bat
+  │   └── config-tunnel.yml    ← Gerado pelo install.bat
+  └── README.md

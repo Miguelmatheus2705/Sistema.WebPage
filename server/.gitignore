@@ -1,0 +1,7 @@
+node_modules/
+cloudflared.exe
+credentials.json
+config-tunnel.yml
+domain.txt
+create-task.ps1
+create-service.ps1
