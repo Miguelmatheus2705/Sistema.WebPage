@@ -1,0 +1,21 @@
+{
+  "name": "sistema-webpage",
+  "version": "1.0.0",
+  "description": "Sistema de redirecionamento para WhatsApp",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "cadastro",
+    "leads"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
